@@ -5,30 +5,30 @@ import java.sql.*;
 /**
  * 
  */
-public class UtilisateurPostgreSQLDAO extends DAO<Utilisateur> {
+public class UtilisateurPostgreSQLDAO extends DAO<User> {
 
 
 
 	@Override
-	public Utilisateur find(long id) {
+	public User find(long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Utilisateur create(Utilisateur obj) {
+	public User create(User obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Utilisateur update(Utilisateur obj) {
+	public User update(User obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void delete(Utilisateur obj) {
+	public void delete(User obj) {
 		// TODO Auto-generated method stub
 		
 	}

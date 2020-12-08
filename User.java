@@ -1,7 +1,7 @@
 /**
  * 
  */
-public class Utilisateur {
+public class User {
 
 	
     /**
@@ -16,7 +16,7 @@ public class Utilisateur {
     /**
      * Default constructor
      */	
-	public Utilisateur(long ID_Utilisateur, String pseudo, String email, String password) {
+	public User(long ID_Utilisateur, String pseudo, String email, String password) {
 		this.ID_Utilisateur = ID_Utilisateur;
 		this.pseudo = pseudo;
 		this.email = email;

@@ -4,12 +4,12 @@ import java.util.*;
 /**
  * 
  */
-public class UtilisateurFacade {
+public class ClientFacade {
 
     /**
      * Default constructor
      */
-    public UtilisateurFacade() {
+    public ClientFacade() {
     }
 
 

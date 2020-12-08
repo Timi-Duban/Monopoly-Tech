@@ -12,7 +12,7 @@ public class MySQLDAOFactory extends AbstractDAOFactory {
 
 
 	@Override
-	public DAO<Utilisateur> getUtilisateurMySQLDAO() {
+	public DAO<User> getUtilisateurMySQLDAO() {
 		// TODO Auto-generated method stub
 		return new UtilisateurMySQLDAO();
 	}

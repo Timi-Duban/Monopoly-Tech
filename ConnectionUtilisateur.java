@@ -18,7 +18,7 @@ public class ConnectionUtilisateur {
      * @param password 
      * @return
      */
-    public Utilisateur checkID(String email, String password) {
+    public User checkID(String email, String password) {
         // TODO implement here
         return null;
     }

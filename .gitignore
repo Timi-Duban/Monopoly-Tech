@@ -1,0 +1,17 @@
+/AbstractDAOFactory.class
+/ConnectionMySQL.class
+/ConnectionUtilisateur.class
+/DAO.class
+/FactoryType.class
+/Main.class
+/MySQLDAOFactory.class
+/PostgreSQLDAOFactory.class
+/Utilisateur.class
+/UtilisateurFacade.class
+/UtilisateurInterface.class
+/UtilisateurMySQLDAO.class
+/UtilisateurPostgreSQLDAO.class
+/UserInterface.class
+/UserInterface$1.class
+/User.class
+/ClientFacade.class
