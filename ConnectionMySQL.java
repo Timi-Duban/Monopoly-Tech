@@ -2,7 +2,7 @@ import java.sql.*;
 
 public class ConnectionMySQL {
 	
-	private static final String URL_BD = "jdbc:mysql://i......";
+	private static final String URL_BD = "jdbc:mysql://localhost/monopoly";
 
 	private static final String LOGIN = "root";
  
