@@ -1,0 +1,11 @@
+CREATE SCHEMA Monopoly;
+use Monopoly;
+CREATE TABLE User(
+id integer NOT NULL AUTO_INCREMENT,
+pseudo varchar(20) NOT NULL,
+email varchar(255) NOT NULL,
+password varchar(255) NOT NULL,
+salt varchar(255) NOT NULL,
+bestScore integer NOT NULL,
+money integer NOT NULL,
+constraint cp_user Primary Key(id));
