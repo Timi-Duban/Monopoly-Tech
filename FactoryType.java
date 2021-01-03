@@ -1,4 +1,0 @@
-
-public enum FactoryType {
-	MYSQL_DAO_FACTORY, POSTGRESQL_DAO_FACTORY;
-}
