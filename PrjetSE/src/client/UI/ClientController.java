@@ -177,11 +177,108 @@ public class ClientController extends Application {
     	Text scenetitle = new Text(user.getPseudo());
     	scenetitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 40));
     	grid.add(scenetitle, 0, 0, 2, 1);
-    	Scene scene = new Scene(grid, 300, 275);
     	
+    	 //Setup the button
+        Button buttonDisconnect = new Button("Disconnect");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_CENTER);
+        hbBtn.getChildren().add(buttonDisconnect);
+        
+    	 //Setup the button
+        Button buttonPlay = new Button("Play");
+        hbBtn.setAlignment(Pos.BOTTOM_CENTER);
+        hbBtn.getChildren().add(buttonPlay);
+        grid.add(hbBtn, 3, 5);
+        
+        
+        //handle the buttons action.
+        buttonDisconnect.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	
+            }
+        });
+        
+        buttonPlay.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	displayStartGameView();
+            }
+        });
+        Scene scene = new Scene(grid, 300, 275);
     	this.currentStage.setScene(scene);
     }
 
+    public void displayStartGameView() {
+    	GridPane grid = new GridPane();
+    	 //Setup the button
+    	HBox hbBtn = new HBox(10);
+        Button buttonJoinPrivate = new Button("Join a private game");
+        hbBtn.setAlignment(Pos.BOTTOM_CENTER);
+        hbBtn.getChildren().add(buttonJoinPrivate);
+        Label codeLabel = new Label("Code");
+        grid.add(codeLabel, 2, 2);
+        TextField codeTextField = new TextField();
+        grid.add(codeTextField, 4, 5);
+    	
+    	Button buttonJoinPublic = new Button("Join a public game");
+        hbBtn.setAlignment(Pos.BOTTOM_CENTER);
+        hbBtn.getChildren().add(buttonJoinPublic);
+        
+        
+        
+        Button buttonCreate = new Button("Create a private game");
+        hbBtn.setAlignment(Pos.BOTTOM_CENTER);
+        hbBtn.getChildren().add(buttonCreate);
+       
+        
+        Button buttonBack = new Button("Go back");
+        hbBtn.setAlignment(Pos.BOTTOM_CENTER);
+        hbBtn.getChildren().add(buttonBack);
+        
+        grid.add(hbBtn, 3, 5);
+        
+        //Setup the text area to inform the user.
+        final Text actiontarget = new Text();
+        grid.add(actiontarget, 1, 7);
+        
+        //handle the buttons action.
+        buttonJoinPublic.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	joinPublicGame();
+            }
+
+        });
+        
+        buttonJoinPrivate.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	String code = codeTextField.getText();
+            	int codeInt=0;
+            	try {
+            		codeInt=Integer.parseInt(code);
+            	}catch(NumberFormatException e) {
+            		actiontarget.setText("Please enter a valid code.");
+            	}
+            	joinPrivateGame(codeInt);
+            }
+        });
+        buttonCreate.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	createGame();
+            }
+        });
+        buttonBack.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	displayHub();
+            }
+        });
+        Scene scene = new Scene(grid, 300, 275);
+        this.currentStage.setScene(scene);
+    }
     
     /**
      * 
@@ -212,6 +309,19 @@ public class ClientController extends Application {
     	}
     	facade.handleSignIn(email,pseudo,password);
     	displayHub();
+    }
+    
+    
+    public void joinPublicGame() {
+    	
+    }
+    
+    public void joinPrivateGame(int code) {
+    	
+    }
+    
+    public void createGame() {
+    	
     }
     
     
