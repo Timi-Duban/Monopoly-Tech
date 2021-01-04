@@ -3,6 +3,7 @@ package client.UI;
 import client.BL.*;
 import generalClasses.User;
 import generalClasses.exceptions.LoginException;
+import generalClasses.exceptions.SendMessageException;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,10 +16,12 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 //To do : gérer les exceptions de handleLogin(..) 
@@ -280,6 +283,19 @@ public class ClientController extends Application {
         this.currentStage.setScene(scene);
     }
     
+    public void showNotification(String message) {
+    	Stage popup=new Stage();
+    	popup.setX(0);
+        popup.setY(0);
+    	VBox box=new VBox();
+    	Text sceneMessage = new Text(message);
+    	box.getChildren().add(sceneMessage);
+    	Scene scene=new Scene(box);
+    	
+    	popup.setScene(scene);
+        popup.show();
+    }
+    
     /**
      * 
      * @param email : the email
@@ -312,16 +328,26 @@ public class ClientController extends Application {
     }
     
     
+    /**
+     * To be called when a player clicks on the "Join public game" button.
+     */
     public void joinPublicGame() {
-    	
+    	facade.joinPublicGame();
     }
     
+    /**
+     * To be called when a player clicks on the "Join private game" button.
+     * @param code : the code of the game
+     */
     public void joinPrivateGame(int code) {
-    	
+    	facade.joinPrivateGame(code);
     }
     
+    /**
+     * To be called when a player clicks on the "Create private game" button.
+     */
     public void createGame() {
-    	
+    	facade.createGame();
     }
     
     

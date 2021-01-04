@@ -24,10 +24,24 @@ public class ClientFacade implements Observer {
 	
 	private final String CONNECTION_ERROR="Connection server error";
 	private final String SENDING_MESSAGE_ERROR="Sending message error";
+	private final String USER_SENDING_ERROR="The server is busy, please try again later.";
 	
 	private final String LOGIN_CHECK="#login";
 	private final String CORRECT="correct";
 	private final String SIGN_IN_CHECK="#signin";
+	
+	//Constant string related to the "Play" use case
+	private final String CREATE_GAME="#createGame";
+	private final String JOIN_PRIVATE="#joinPrivateGame";
+	private final String JOIN_PUBLIC="#joinPublicGame";
+	private final String NEW_PLAYER="#newPlayer";
+	private final String PLAYER_QUIT="#playerQuit";
+	private final String QUIT_GAME="#quitGame";
+	private final String GAME_START="#gameStart";
+	private final String GAME_JOINED="#gameJoined";
+	private final String GAME_NOT_FOUND="#gameNotFound";
+	private final String GAME_ALREADY_STARTED="#gameAlreadyStarted";
+	private final String GAME_FULL="#gameFull";
 	
 	
 	private final int WAITING_TIME=200;
@@ -226,6 +240,33 @@ public class ClientFacade implements Observer {
 	 */
 	public void setCurrentUser(User currentUser) {
 		this.currentUser = currentUser;
+	}
+	
+	/**
+	 * Send to the server the intention of the client to join a public game.
+	 */
+	public void joinPublicGame() {
+		try {
+			throw new IOException();
+			//clientCL.sendToServer(JOIN_PUBLIC);
+		}catch(IOException e) {
+			controller.showNotification(USER_SENDING_ERROR);
+		}
+	}
+	
+	/**
+	 * Send to the server the intention of the client to join a private game.
+	 * @param code : the code of the game
+	 */
+	public void joinPrivateGame(int code) {
+		
+	}
+	
+	/**
+	 * Send to the server the intention of the client to create a private game.
+	 */
+	public void createGame() {
+		
 	}
 
 }
