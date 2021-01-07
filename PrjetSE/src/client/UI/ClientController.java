@@ -31,7 +31,7 @@ public class ClientController extends Application {
 	private Stage currentStage;
 	private ClientFacade facade;
     /**
-     * Default constructor. Must be public or else java fx application cannot be intantiated.
+     * Default constructor. Must be public or else java fx application cannot be instantiated.
      * However the contructor must not be called. See getInstance instead.
      */
     public ClientController() {}
@@ -258,13 +258,7 @@ public class ClientController extends Application {
             @Override
             public void handle(ActionEvent event) {
             	String code = codeTextField.getText();
-            	int codeInt=0;
-            	try {
-            		codeInt=Integer.parseInt(code);
-            	}catch(NumberFormatException e) {
-            		actiontarget.setText("Please enter a valid code.");
-            	}
-            	joinPrivateGame(codeInt);
+            	joinPrivateGame(code);
             }
         });
         buttonCreate.setOnAction(new EventHandler<ActionEvent>() {
@@ -281,6 +275,10 @@ public class ClientController extends Application {
         });
         Scene scene = new Scene(grid, 300, 275);
         this.currentStage.setScene(scene);
+    }
+    
+    public void displayWaitingRoom() {
+    	
     }
     
     public void showNotification(String message) {
@@ -339,7 +337,7 @@ public class ClientController extends Application {
      * To be called when a player clicks on the "Join private game" button.
      * @param code : the code of the game
      */
-    public void joinPrivateGame(int code) {
+    public void joinPrivateGame(String code) {
     	facade.joinPrivateGame(code);
     }
     
