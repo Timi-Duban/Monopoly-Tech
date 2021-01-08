@@ -303,7 +303,7 @@ public class ClientController extends Application {
      */
     public void handleLogin(String email, String password) throws LoginException {
     	if(facade==null) {
-    		facade=new ClientFacade();
+    	//	facade=new ClientFacade();
     	}
     	facade.handleLogin(email,password);
     	displayHub();
@@ -319,7 +319,7 @@ public class ClientController extends Application {
      */
     public void handleSignIn(String email, String pseudo, String password) throws LoginException {
     	if(facade==null) {
-    		facade=new ClientFacade();
+    	//	facade=new ClientFacade();
     	}
     	facade.handleSignIn(email,pseudo,password);
     	displayHub();

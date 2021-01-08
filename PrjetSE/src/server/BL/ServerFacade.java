@@ -26,6 +26,9 @@ public class ServerFacade implements Observer {
 	private ObservableOriginatorServer serverCL;
 	private ServerController controller;
 	
+	private LinkedList<ConnectionToClient> waitingPlayers=new LinkedList<ConnectionToClient>();
+	private Map<Integer,GameServer> listGames=new HashMap<Integer,GameServer>();
+	
 	
    
 	/**
@@ -142,10 +145,81 @@ public class ServerFacade implements Observer {
      * @param mesReceived
      * @param client
      */
-    private void handleGameCommand(String mesReceived,ConnectionToClient client) {
-    	
+    private void handleGameCommand(String mesReceived,ConnectionToClient client) throws IOException {
+        String[] mes=mesReceived.split(" ");
+        String command=mes[1];
+        String code;
+        GameServer game;
+        switch(command) {
+        case CommunicationCommands.C_JOIN_PRIVATE:
+        	code=mes[2];
+        	game=listGames.get(Integer.getInteger(code));
+        	if(game==null) {
+        		client.sendToClient(CommunicationCommands.S_GAME_NOT_FOUND);
+        	}else {
+        		if(game.isFull()) {
+        			client.sendToClient(CommunicationCommands.S_GAME_FULL);
+        		}else if(game.isStarted()) {
+        			client.sendToClient(CommunicationCommands.S_GAME_ALREADY_STARTED);
+        		}else {
+        			game.addPlayer(client);
+        		}
+        	}
+        	break;
+        case CommunicationCommands.C_JOIN_PUBLIC:
+        	addWaitingPlayer(client);
+        	break;
+        case CommunicationCommands.C_CREATE_GAME:
+        	game=createGame();
+        	game.addPlayer(client);
+        	game.newHost();
+        	break;
+        case CommunicationCommands.C_QUIT_GAME:
+        	code=mes[2];
+        	game=this.listGames.get(Integer.getInteger(code));
+        	if(game!=null && game.removePlayer(client)) {
+        		this.listGames.remove(Integer.getInteger(code));
+        	}
+        	break;
+        case CommunicationCommands.C_START_GAME:
+        	code=mes[2];
+        	game=this.listGames.get(Integer.getInteger(code));
+        	game.startGame();
+        	break;
+        }
     }
 
+    /**
+     * Add a player to the list of player waiting for a public game, and create a new game and start it
+     * if there is enough players. If so, remove the players from the list.
+     * @param client
+     */
+    private void addWaitingPlayer(ConnectionToClient client) throws IOException {
+    	this.waitingPlayers.add(client);
+    	if(this.waitingPlayers.size()==GameServer.MAX_NUMBER_PLAYER) {
+    		GameServer game=createGame();
+    		for(int i=0;i<8;i++) {
+    			game.addPlayer(this.waitingPlayers.removeFirst());
+    		}
+    		game.startGame();
+    	}
+    }
+    
+    /**
+     * Create a new game whose code is randomly generated. Moreover, add the game to the list of games.
+     * @return the game newly created.
+     */
+    private GameServer createGame() {
+		Random random=new Random();
+		int code=random.nextInt();
+		while(this.listGames.containsKey(code)) {
+			code=random.nextInt();
+		}
+		GameServer game=new GameServer(code);
+		this.listGames.put(code,game);
+		return new GameServer(code);
+    }
+    
     /**
      * @return
      */
