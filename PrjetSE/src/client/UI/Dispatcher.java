@@ -1,6 +1,9 @@
 package client.UI;
 
+import java.util.ArrayList;
+
 import client.BL.ClientFacade;
+import generalClasses.Item;
 import javafx.stage.Stage;
 
 public class Dispatcher {
@@ -47,4 +50,9 @@ public class Dispatcher {
 	public void handleSignin(String email, String pseudo, String password) {
 		facade.handleSignIn(email, pseudo, password);
 	}
+	
+	public ArrayList<Item> getNotBoughtItems(){
+		return facade.getNotBoughtItems();
+	}
+
 }

@@ -1,5 +1,8 @@
+DROP SCHEMA Monopoly;
+
 CREATE SCHEMA Monopoly;
 use Monopoly;
+
 CREATE TABLE User(
 id integer NOT NULL AUTO_INCREMENT,
 pseudo varchar(20) NOT NULL,
@@ -9,3 +12,19 @@ salt varchar(255) NOT NULL,
 bestScore integer NOT NULL,
 money integer NOT NULL,
 constraint cp_user Primary Key(id));
+
+
+CREATE TABLE Items(
+idItem integer NOT NULL AUTO_INCREMENT,
+itemName varchar(20) UNIQUE NOT NULL,
+price integer NOT NULL,
+urlImage varchar(255) NOT NULL,
+itemDescription varchar(255),
+constraint cp_items Primary Key(idItem));
+
+CREATE TABLE ItemTransactions(
+idTransaction integer NOT NULL AUTO_INCREMENT,
+id integer NOT NULL,
+idItem integer NOT NULL,
+constraint cp_transactions Primary Key(idTransaction));
+

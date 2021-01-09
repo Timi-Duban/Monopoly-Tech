@@ -9,6 +9,7 @@ import generalClasses.exceptions.LoginException;
 import generalClasses.exceptions.SendMessageException;
 import generalClasses.exceptions.WrongIdException;
 import generalClasses.CommunicationCommands;
+import generalClasses.Item;
 
 import com.lloseng.ocsf.client.*;
 
@@ -40,6 +41,7 @@ public class ClientFacade implements Observer {
 	private User currentUser=null;
 	private ObservableClient clientCL;
 	private Dispatcher dispatcher;
+	private ArrayList<Item> itemList = null;
 	
 	private boolean successfulResponsefromServer=false;
 	private boolean successfulAction=false;
@@ -74,6 +76,8 @@ public class ClientFacade implements Observer {
 	    	}
     	}else if(arg instanceof User) {
     		handleMessageFromServer(arg);
+    	}else if(arg instanceof ArrayList<?>) {
+    		handleMessageFromServer(arg);
     	}else if(arg instanceof Exception) {
     		//Handle a sudden disconnection from the server
 		  
@@ -83,7 +87,8 @@ public class ClientFacade implements Observer {
     /**
      * 
      */
-    private void handleMessageFromServer(Object mes) {
+    @SuppressWarnings("unchecked") //the only ArrayList used here is of type Item.
+	private void handleMessageFromServer(Object mes) {
     	if(mes instanceof String) {
     		String sMes=(String)mes;
     		System.out.println(sMes);
@@ -99,6 +104,9 @@ public class ClientFacade implements Observer {
     		}
     	}else if(mes instanceof User) {
     		setCurrentUser((User) mes);
+    		successfulResponsefromServer=true;
+    	}else if(mes instanceof ArrayList<?>) {
+    		setItemList((ArrayList<Item>) mes);
     		successfulResponsefromServer=true;
     	}
     }
@@ -227,8 +235,33 @@ public class ClientFacade implements Observer {
     	//Waiting for the server to send us the User
     	waitServerResponse();
     	dispatcher.displayMainHub();
-
     }
+    
+	public ArrayList<Item> getNotBoughtItems(){
+		//Try to connect to the database
+		try {
+        	clientCL.openConnection();
+        }catch(IOException e) {
+        	dispatcher.update("The server is unavailable, please try again later.");
+        }
+    	waitServerResponse();
+    	// Try to ask server to see the items
+    	try {
+    		int idUser = this.getCurrentUser().getId();
+    		clientCL.sendToServer(CommunicationCommands.SHOP+" "+CommunicationCommands.GETITEMS+" "+idUser);   		
+    		waitServerResponse();
+    		return this.itemList;
+    	}catch(IOException e) {
+    		try{
+    			clientCL.closeConnection();
+    		}catch(IOException ex) {}
+    		dispatcher.update("The server is busy, please try again later.");
+    	}
+    	// All cases are handled
+    	System.out.println("unexpected error");
+    	return null;
+	}
+
     
   
     
@@ -288,6 +321,26 @@ public class ClientFacade implements Observer {
 		this.currentUser = currentUser;
 	}
 	
+	
+	
+	/**
+	 * @return the itemList
+	 */
+	public ArrayList<Item> getItemList() {
+		return itemList;
+	}
+
+
+
+	/**
+	 * @param itemList the itemList to set
+	 */
+	public void setItemList(ArrayList<Item> itemList) {
+		this.itemList = itemList;
+	}
+
+
+
 	/**
 	 * Send to the server the intention of the client to join a public game.
 	 */

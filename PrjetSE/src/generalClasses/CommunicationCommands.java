@@ -6,7 +6,7 @@ package generalClasses;
  *	Those starting with C are command whose originator is the client, S is for server. If none, then the command is used by both.
  */
 public class CommunicationCommands {
-	//Constant string related to the "Play" use case
+	//Constant string related to the "Login" and "Sign in" use case
 	public static final String STARTING="#starting";
 	public static final String LOGIN_CHECK="#login";
 	public static final String S_CORRECT="correct";
@@ -29,4 +29,8 @@ public class CommunicationCommands {
 	public static final String S_GAME_ALREADY_STARTED=GAME+" #gameAlreadyStarted";
 	public static final String S_GAME_FULL=GAME+" #gameFull";
 	public static final String S_NEW_HOST=GAME+" #newHost";
+	
+	//Constant string related to the "Shop" use case
+	public static final String SHOP="#shop";
+	public static final String GETITEMS="#shop";
 }
