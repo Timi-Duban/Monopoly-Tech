@@ -16,19 +16,20 @@ public class CommunicationCommands {
 	
 	//Constant string related to the "Play" use case
 	public static final String GAME="#game";
-	public static final String C_CREATE_GAME=GAME+" #createGame";
-	public static final String C_JOIN_PRIVATE=GAME+" #joinPrivateGame";
-	public static final String C_JOIN_PUBLIC=GAME+" #joinPublicGame";
-	public static final String C_QUIT_GAME=GAME+" #quitGame";
-	public final static String C_START_GAME=GAME+" #startGame";
-	public static final String S_NEW_PLAYER=GAME+" #newPlayer";
-	public static final String S_PLAYER_QUIT=GAME+" #playerQuit";
-	public static final String S_GAME_START=GAME+" #gameStarted";
-	public static final String S_GAME_JOINED=GAME+" #gameJoined";
-	public static final String S_GAME_NOT_FOUND=GAME+" #gameNotFound";
-	public static final String S_GAME_ALREADY_STARTED=GAME+" #gameAlreadyStarted";
-	public static final String S_GAME_FULL=GAME+" #gameFull";
-	public static final String S_NEW_HOST=GAME+" #newHost";
+	public static final String C_CREATE_GAME="#createGame";
+	public static final String C_JOIN_PRIVATE="#joinPrivateGame";
+	public static final String C_JOIN_PUBLIC="#joinPublicGame";
+	public static final String C_QUIT_GAME="#quitGame";
+	public final static String C_START_GAME="#startGame";
+	public static final String S_NEW_PLAYER="#newPlayer";
+	public static final String S_PLAYER_QUIT="#playerQuit";
+	public static final String S_GAME_START= "#gameStarted";
+	public static final String S_GAME_JOINED="#gameJoined";
+	public static final String S_GAME_NOT_FOUND= "#gameNotFound";
+	public static final String S_GAME_ALREADY_STARTED="#gameAlreadyStarted";
+	public static final String S_GAME_FULL="#gameFull";
+	public static final String S_NEW_HOST="#newHost";
+	public static final String S_IS_WAITING="#isWaiting";
 	
 	//Constant string related to the "Shop" use case
 	public static final String SHOP="#shop";

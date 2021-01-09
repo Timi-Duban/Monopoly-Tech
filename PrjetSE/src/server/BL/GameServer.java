@@ -27,8 +27,8 @@ public class GameServer {
 	 */
 	public void addPlayer(ConnectionToClient client) throws IOException {
 		players.add(client);
-		client.sendToClient(CommunicationCommands.S_GAME_JOINED+" "+getCode()+retrieveListPlayers());
-		sendToAllPlayers(CommunicationCommands.S_NEW_PLAYER,client);
+		client.sendToClient(CommunicationCommands.GAME+" "+CommunicationCommands.S_GAME_JOINED+" "+getCode()+retrieveListPlayers());
+		sendToAllPlayers(CommunicationCommands.GAME+" "+CommunicationCommands.S_NEW_PLAYER,client);
 	}
 	
 	/**
@@ -40,7 +40,7 @@ public class GameServer {
 		boolean isHost=players.indexOf(client)==0;
 		players.remove(client);
 		if(players.size()!=0) {
-			sendToAllPlayers(CommunicationCommands.S_PLAYER_QUIT,null);
+			sendToAllPlayers(CommunicationCommands.GAME+" "+CommunicationCommands.S_PLAYER_QUIT,null);
 			if(isHost) {
 				newHost();
 			}
@@ -56,12 +56,12 @@ public class GameServer {
 	 * @throws IOException
 	 */
 	public void newHost() throws IOException {
-		players.get(0).sendToClient(CommunicationCommands.S_NEW_HOST);
+		players.get(0).sendToClient(CommunicationCommands.GAME+" "+CommunicationCommands.S_NEW_HOST);
 	}
 	
 	public void startGame() throws IOException {
 		this.isStarted=true;
-		sendToAllPlayers(CommunicationCommands.S_GAME_START,null);
+		sendToAllPlayers(CommunicationCommands.GAME+" "+CommunicationCommands.S_GAME_START,null);
 
 	}
 	

@@ -22,7 +22,7 @@ import java.util.*;
 //To do : add a timeout in handleLogin
 @SuppressWarnings("deprecation")
 public class ClientFacade implements Observer {
-	private final int PORT = 5556;
+	private final int PORT = 6000;
 	private final String HOST = "localhost";
 	
 	private final String CONNECTION_ERROR="Connection server error";
@@ -143,7 +143,8 @@ public class ClientFacade implements Observer {
     	case CommunicationCommands.S_GAME_START:
     		
     	case CommunicationCommands.S_GAME_JOINED:
-    		
+    		dispatcher.displayWaitingRoom(mes[2]);
+    		dispatcher.addPlayer(mes[3]);
     	case CommunicationCommands.S_GAME_NOT_FOUND:
     		
     	case CommunicationCommands.S_GAME_ALREADY_STARTED:
@@ -151,6 +152,9 @@ public class ClientFacade implements Observer {
     	case CommunicationCommands.S_GAME_FULL:
     		
     	case CommunicationCommands.S_NEW_HOST:
+    		
+    	case CommunicationCommands.S_IS_WAITING:
+    		dispatcher.update("Waiting for players...");
     		
     	default:
     		
@@ -177,14 +181,14 @@ public class ClientFacade implements Observer {
             	if(successfulAction) {
             		clientCL.sendToServer(CommunicationCommands.STARTING+" "+CommunicationCommands.C_GET_USER);
             		successfulAction=false;
+                	//Waiting for the server to send us the User
+                	waitServerResponse();
+                	dispatcher.displayMainHub();
             	}else {
             		clientCL.closeConnection();
             		dispatcher.update("Wrong ID.");
             		
             	}
-            	//Waiting for the server to send us the User
-            	waitServerResponse();
-            	dispatcher.displayMainHub();
 	       
 	        	
 	        }catch(IOException e) {
@@ -346,7 +350,7 @@ public class ClientFacade implements Observer {
 	 */
 	public void joinPublicGame() {
 		try {
-			clientCL.sendToServer(CommunicationCommands.C_JOIN_PUBLIC);
+			clientCL.sendToServer(CommunicationCommands.GAME+" "+CommunicationCommands.C_JOIN_PUBLIC);
 		}catch(IOException e) {
 			dispatcher.update(USER_SENDING_ERROR);
 		}
@@ -358,7 +362,7 @@ public class ClientFacade implements Observer {
 	 */
 	public void joinPrivateGame(String code) {
 		try {
-			clientCL.sendToServer(CommunicationCommands.C_JOIN_PRIVATE);
+			clientCL.sendToServer(CommunicationCommands.GAME+" "+CommunicationCommands.C_JOIN_PRIVATE+" "+code);
 		}catch(IOException e) {
 			dispatcher.update(USER_SENDING_ERROR);
 		}
@@ -369,7 +373,7 @@ public class ClientFacade implements Observer {
 	 */
 	public void createGame() {
 		try {
-			clientCL.sendToServer(CommunicationCommands.C_CREATE_GAME);
+			clientCL.sendToServer(CommunicationCommands.GAME+" "+CommunicationCommands.C_CREATE_GAME);
 		}catch(IOException e) {
 			dispatcher.update(USER_SENDING_ERROR);
 		}

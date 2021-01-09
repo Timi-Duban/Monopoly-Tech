@@ -21,7 +21,7 @@ import server.UI.ServerController;
 @SuppressWarnings("deprecation")
 public class ServerFacade implements Observer {
 	
-	final public static int DEFAULT_PORT = 5556;
+	final public static int DEFAULT_PORT = 6000;
 	
 	private ObservableOriginatorServer serverCL;
 	private ServerController controller;
@@ -155,12 +155,12 @@ public class ServerFacade implements Observer {
         	code=mes[2];
         	game=listGames.get(Integer.getInteger(code));
         	if(game==null) {
-        		client.sendToClient(CommunicationCommands.S_GAME_NOT_FOUND);
+        		client.sendToClient(CommunicationCommands.GAME+" "+CommunicationCommands.S_GAME_NOT_FOUND);
         	}else {
         		if(game.isFull()) {
-        			client.sendToClient(CommunicationCommands.S_GAME_FULL);
+        			client.sendToClient(CommunicationCommands.GAME+" "+CommunicationCommands.S_GAME_FULL);
         		}else if(game.isStarted()) {
-        			client.sendToClient(CommunicationCommands.S_GAME_ALREADY_STARTED);
+        			client.sendToClient(CommunicationCommands.GAME+" "+CommunicationCommands.S_GAME_ALREADY_STARTED);
         		}else {
         			game.addPlayer(client);
         		}
@@ -199,6 +199,7 @@ public class ServerFacade implements Observer {
     	if(this.waitingPlayers.size()==GameServer.MAX_NUMBER_PLAYER) {
     		GameServer game=createGame();
     		for(int i=0;i<8;i++) {
+    			
     			game.addPlayer(this.waitingPlayers.removeFirst());
     		}
     		game.startGame();

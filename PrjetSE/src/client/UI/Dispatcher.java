@@ -33,6 +33,26 @@ public class Dispatcher {
 		MainHubView view=new MainHubView(this);
 		setCurrentController(view.getController());
 		this.currentController.display(this.stage);
+		String pseudo=facade.getCurrentUser().getPseudo();
+		((MainHubController)this.currentController).updatePseudo(pseudo);
+	}
+	
+	public void displayCreationGame() {
+		CreationGameView view=new CreationGameView(this);
+		setCurrentController(view.getController());
+		this.currentController.display(this.stage);
+	}
+	
+	public void displayWaitingRoom(String code) {
+		displayMainHub();
+		/*WaitingRoomView view=new WaitingRoomView(this);
+		setCurrentController(view.getController());
+		this.currentController.display(this.stage);*/
+
+	}
+	
+	public void displayGame(){
+		
 	}
 	
 	public void update(String message) {
@@ -55,4 +75,24 @@ public class Dispatcher {
 		return facade.getNotBoughtItems();
 	}
 
+	
+	public void joinPublic() {
+		facade.joinPublicGame();
+	}
+	
+	public void joinPrivate(String code) {
+		facade.joinPrivateGame(code);
+	}
+	
+	public void createGame() {
+		facade.createGame();
+	}
+	
+	public void addPlayer(String pseudo) {
+		((WaitingRoomController)this.currentController).addPlayer(pseudo);
+	}
+	
+	public void removePlayer(String pseudo) {
+		((WaitingRoomController)this.currentController).removePlayer(pseudo);
+	}
 }
