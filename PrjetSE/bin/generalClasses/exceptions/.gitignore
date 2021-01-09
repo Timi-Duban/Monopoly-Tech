@@ -1,0 +1,6 @@
+/AlreadyUsedMailException.class
+/ConnectionServerException.class
+/InvalidIdException.class
+/LoginException.class
+/SendMessageException.class
+/WrongIdException.class

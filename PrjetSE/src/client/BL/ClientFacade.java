@@ -8,10 +8,12 @@ import generalClasses.exceptions.InvalidIdException;
 import generalClasses.exceptions.LoginException;
 import generalClasses.exceptions.SendMessageException;
 import generalClasses.exceptions.WrongIdException;
+import generalClasses.CommunicationCommands;
 
 import com.lloseng.ocsf.client.*;
 
 import client.UI.ClientController;
+import client.UI.Dispatcher;
 
 import java.io.IOException;
 import java.util.*;
@@ -26,22 +28,6 @@ public class ClientFacade implements Observer {
 	private final String SENDING_MESSAGE_ERROR="Sending message error";
 	private final String USER_SENDING_ERROR="The server is busy, please try again later.";
 	
-	private final String LOGIN_CHECK="#login";
-	private final String CORRECT="correct";
-	private final String SIGN_IN_CHECK="#signin";
-	
-	//Constant string related to the "Play" use case
-	private final String CREATE_GAME="#createGame";
-	private final String JOIN_PRIVATE="#joinPrivateGame";
-	private final String JOIN_PUBLIC="#joinPublicGame";
-	private final String NEW_PLAYER="#newPlayer";
-	private final String PLAYER_QUIT="#playerQuit";
-	private final String QUIT_GAME="#quitGame";
-	private final String GAME_START="#gameStart";
-	private final String GAME_JOINED="#gameJoined";
-	private final String GAME_NOT_FOUND="#gameNotFound";
-	private final String GAME_ALREADY_STARTED="#gameAlreadyStarted";
-	private final String GAME_FULL="#gameFull";
 	
 	
 	private final int WAITING_TIME=200;
@@ -53,7 +39,7 @@ public class ClientFacade implements Observer {
 	
 	private User currentUser=null;
 	private ObservableClient clientCL;
-	private ClientController controller;
+	private Dispatcher dispatcher;
 	
 	private boolean successfulResponsefromServer=false;
 	private boolean successfulAction=false;
@@ -61,9 +47,9 @@ public class ClientFacade implements Observer {
 	/**
      * Default constructor
      */
-    public ClientFacade() {
+    public ClientFacade(Dispatcher dispatcher) {
 	    clientCL= new ObservableClient(HOST,PORT);
-	    controller=ClientController.getInstance();
+	    this.dispatcher=dispatcher;
 	    this.clientCL.addObserver(this);
 
     }
@@ -78,37 +64,90 @@ public class ClientFacade implements Observer {
     public void update(Observable obs , Object arg ) {
     	if(arg instanceof String) {
     		String mes=(String) arg;
-    		System.out.println(mes);
 	    	if(mes.equals(ObservableClient.CONNECTION_ESTABLISHED)) {
 	    		//Handle successful connection to the server
 	    		successfulResponsefromServer=true;
 	    	}else if(mes.equals(ObservableClient.CONNECTION_CLOSED)) {
-	    		//happens if the connection is properly closed
-				  
-				  
-	    	}else if(mes.split(" ")[0].equals(LOGIN_CHECK)) {
-	    		//Id validation from server
-	    		if(mes.split(" ")[1].equals(CORRECT)) {
-	    			successfulAction=true;
-	    		}
-	    		successfulResponsefromServer=true;
-	    	} else if(mes.split(" ")[0].equals(SIGN_IN_CHECK)){
-	    		//sign in validation from server
-	    		if(mes.split(" ")[1].equals(CORRECT)) {
-	    			successfulAction=true;
-	    		}
-	    		successfulResponsefromServer=true;
+	    		//happens if the connection is properly closed	  
+	    	}else {
+	    		handleMessageFromServer(arg);	    		
 	    	}
     	}else if(arg instanceof User) {
-    		setCurrentUser((User) arg);
-    		successfulResponsefromServer=true;
+    		handleMessageFromServer(arg);
     	}else if(arg instanceof Exception) {
     		//Handle a sudden disconnection from the server
 		  
     	}
     }
     
-
+    /**
+     * 
+     */
+    private void handleMessageFromServer(Object mes) {
+    	if(mes instanceof String) {
+    		String sMes=(String)mes;
+    		System.out.println(sMes);
+    		String[] mesSplit=(sMes).split(" ");
+    		
+    		switch(mesSplit[0]) {
+    		case CommunicationCommands.GAME:
+    			handleGameCommand(sMes);
+    			break;
+    		case CommunicationCommands.STARTING:
+    			handleStartingCommand(sMes);
+    			break;
+    		}
+    	}else if(mes instanceof User) {
+    		setCurrentUser((User) mes);
+    		successfulResponsefromServer=true;
+    	}
+    }
+    
+    private void handleStartingCommand(String mesReceived) {
+    	String[] mes=mesReceived.split(" ");
+    	String command=mes[1];
+    	switch(command) {
+    	case CommunicationCommands.LOGIN_CHECK:
+    		//Id validation from server
+    		if(mes[2].equals(CommunicationCommands.S_CORRECT)) {
+    			successfulAction=true;
+    		}
+    		successfulResponsefromServer=true;
+    		break;
+    	case CommunicationCommands.SIGN_IN_CHECK:
+    		//sign in validation from server
+    		if(mes[2].equals(CommunicationCommands.S_CORRECT)) {
+    			successfulAction=true;
+    		}
+    		successfulResponsefromServer=true;
+    		break;
+    	}
+    }
+    
+    private void handleGameCommand(String mesReceived) {
+    	String[] mes=mesReceived.split(" ");
+    	String command=mes[1];
+    	switch(command) {
+    	case CommunicationCommands.S_NEW_PLAYER:
+    		
+    	case CommunicationCommands.S_PLAYER_QUIT:
+    		
+    	case CommunicationCommands.S_GAME_START:
+    		
+    	case CommunicationCommands.S_GAME_JOINED:
+    		
+    	case CommunicationCommands.S_GAME_NOT_FOUND:
+    		
+    	case CommunicationCommands.S_GAME_ALREADY_STARTED:
+    		
+    	case CommunicationCommands.S_GAME_FULL:
+    		
+    	case CommunicationCommands.S_NEW_HOST:
+    		
+    	default:
+    		
+    	}
+    }
 
     /**
      * @param mail 
@@ -117,36 +156,37 @@ public class ClientFacade implements Observer {
      * If the id are not correct, throws a WrondIdException.
      * Also ask for the server to send us the user data.
      */
-    public void handleLogin(String email, String password) throws LoginException {
+    public void handleLogin(String email, String password) {
     	if(email.isBlank() || password.isBlank()) {
-    		throw new InvalidIdException("Please fill the form.");
+    		dispatcher.update("Please fill the form.");
+    	}else {
+	    	try {
+	        	clientCL.openConnection();
+	        	waitServerResponse();
+	        	
+            	clientCL.sendToServer(CommunicationCommands.STARTING+" "+CommunicationCommands.LOGIN_CHECK+" "+email+" "+password);
+            	waitServerResponse();
+            	if(successfulAction) {
+            		clientCL.sendToServer(CommunicationCommands.STARTING+" "+CommunicationCommands.C_GET_USER);
+            		successfulAction=false;
+            	}else {
+            		clientCL.closeConnection();
+            		dispatcher.update("Wrong ID.");
+            		
+            	}
+            	//Waiting for the server to send us the User
+            	waitServerResponse();
+            	dispatcher.displayMainHub();
+	       
+	        	
+	        }catch(IOException e) {
+	        	dispatcher.update("The server is unavailable, please try again later.");
+	        	try {
+	        		clientCL.closeConnection();
+	        	}catch(IOException ex) {}
+	        }
     	}
-    	try {
-        	clientCL.openConnection();
-        }catch(IOException e) {
-        	throw new ConnectionServerException(CONNECTION_ERROR);
-        }
-    	waitServerResponse();
-    	try {
-        	clientCL.sendToServer(LOGIN_CHECK+" "+email+" "+password);
-        	waitServerResponse();
-        	if(successfulAction) {
-        		clientCL.sendToServer("#getCurrentUser");
-        		successfulAction=false;
-        	}else {
-        		clientCL.closeConnection();
-        		throw new WrongIdException();
-        		
-        	}
-        }catch(IOException e) {
-        	try {
-        		clientCL.closeConnection();
-        	}catch(IOException ex) {}
-        	throw new SendMessageException(SENDING_MESSAGE_ERROR);
-        }
     	
-    	//Waiting for the server to send us the User
-    	waitServerResponse();
     }
     
     /**
@@ -158,33 +198,39 @@ public class ClientFacade implements Observer {
      * If the email is already used, throws a AlreadyUsedMailException.
      * Also ask for the server to send us the user data.
      */
-    public void handleSignIn(String email, String pseudo, String password) throws LoginException {
+    public void handleSignIn(String email, String pseudo, String password) {
     	checkValidity(email,pseudo,password);
     	try {
         	clientCL.openConnection();
         }catch(IOException e) {
-        	throw new ConnectionServerException(CONNECTION_ERROR);
+        	dispatcher.update("The server is unavailable, please try again later.");
         }
     	waitServerResponse();
     	String salt=PasswordUtils.getSalt(SALT_LENGTH);
     	String SecurePassword = PasswordUtils.generateSecurePassword(password, salt);
     	try {
-    		clientCL.sendToServer(SIGN_IN_CHECK+" "+email+" "+pseudo+" "+SecurePassword+" "+salt);   		
+    		clientCL.sendToServer(CommunicationCommands.STARTING+" "+CommunicationCommands.SIGN_IN_CHECK+" "+email+" "+pseudo+" "+SecurePassword+" "+salt);   		
     		waitServerResponse();
     		if(successfulAction) {
-    			clientCL.sendToServer("#getCurrentUser");
+    			clientCL.sendToServer(CommunicationCommands.STARTING+" "+CommunicationCommands.C_GET_USER);
     			successfulAction=false;
     		}else {
     			clientCL.closeConnection();
-    			throw new AlreadyUsedMailException();
+    			dispatcher.update("Email already used.");
     		}
     	}catch(IOException e) {
-    		throw new SendMessageException(SENDING_MESSAGE_ERROR);
+    		try{
+    			clientCL.closeConnection();
+    		}catch(IOException ex) {}
+    		dispatcher.update("The server is busy, please try again later.");
     	}
     	//Waiting for the server to send us the User
     	waitServerResponse();
+    	dispatcher.displayMainHub();
 
     }
+    
+  
     
     /**
      * 
@@ -193,22 +239,22 @@ public class ClientFacade implements Observer {
      * @param password
      * @throws InvalidIdException if the email is invalid, the pseudo is too short or too long, or if the password is too short.
      */
-    private void checkValidity(String email, String pseudo, String password) throws InvalidIdException {
+    private void checkValidity(String email, String pseudo, String password){
     	String[] mail=email.split("@");
     	if(mail.length!=2 || mail[0].isEmpty() || mail[1].isEmpty()) {
-    		throw new InvalidIdException("Your email is incorrect.");
+    		dispatcher.update("Your email is incorrect.");
     	}
     	
     	if(pseudo.length()<PSEUDO_MINIMAL_LENGTH) {
-    		throw new InvalidIdException("Your pseudonym is too short.");
+    		dispatcher.update("Your pseudonym is too short.");
     	}
     	
     	if(pseudo.length()>PSEUDO_MAXIMAL_LENGTH) {
-    		throw new InvalidIdException("Your pseudonym is too long.");
+    		dispatcher.update("Your pseudonym is too long.");
     	}
     	
     	if(password.length()<PASSWORD_MINIMAL_LENGTH) {
-    		throw new InvalidIdException("Your password is too short");
+    		dispatcher.update("Your password is too short");
     	}
 
     }
@@ -247,10 +293,9 @@ public class ClientFacade implements Observer {
 	 */
 	public void joinPublicGame() {
 		try {
-			throw new IOException();
-			//clientCL.sendToServer(JOIN_PUBLIC);
+			clientCL.sendToServer(CommunicationCommands.C_JOIN_PUBLIC);
 		}catch(IOException e) {
-			controller.showNotification(USER_SENDING_ERROR);
+			dispatcher.update(USER_SENDING_ERROR);
 		}
 	}
 	
@@ -258,15 +303,23 @@ public class ClientFacade implements Observer {
 	 * Send to the server the intention of the client to join a private game.
 	 * @param code : the code of the game
 	 */
-	public void joinPrivateGame(int code) {
-		
+	public void joinPrivateGame(String code) {
+		try {
+			clientCL.sendToServer(CommunicationCommands.C_JOIN_PRIVATE);
+		}catch(IOException e) {
+			dispatcher.update(USER_SENDING_ERROR);
+		}
 	}
 	
 	/**
 	 * Send to the server the intention of the client to create a private game.
 	 */
 	public void createGame() {
-		
+		try {
+			clientCL.sendToServer(CommunicationCommands.C_CREATE_GAME);
+		}catch(IOException e) {
+			dispatcher.update(USER_SENDING_ERROR);
+		}
 	}
 
 }
