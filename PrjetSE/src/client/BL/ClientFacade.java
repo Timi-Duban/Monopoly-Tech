@@ -329,6 +329,16 @@ public class ClientFacade implements Observer {
 	
 	
 	
+	public void disconnect() {
+		try {
+			clientCL.sendToServer(CommunicationCommands.C_DISCONNECT);
+			clientCL.closeConnection();
+			dispatcher.displayLogin();
+		}catch(IOException e) {
+			dispatcher.update("Try again later.");
+		}
+	}
+	
 	/**
 	 * @return the itemList
 	 */
@@ -375,10 +385,15 @@ public class ClientFacade implements Observer {
 	 */
 	public void createGame() {
 		try {
+			
 			clientCL.sendToServer(CommunicationCommands.GAME+" "+CommunicationCommands.C_CREATE_GAME);
 			waitServerResponse();
 			if(successfulAction) {
-				dispatcher.displayWaitingRoom(serverMessage);
+				String[] mes=serverMessage.split(" ");
+				dispatcher.displayWaitingRoom(mes[2]);
+				for (int i=3;i<mes.length;i++) {
+					dispatcher.addPlayer(mes[i]);
+				}
 				successfulAction=false;
 			}else {
 				dispatcher.update("Please try again later.");
