@@ -22,7 +22,7 @@ import java.util.*;
 //To do : add a timeout in handleLogin
 @SuppressWarnings("deprecation")
 public class ClientFacade implements Observer {
-	private final int PORT = 6000;
+	private final int PORT = 5555;
 	private final String HOST = "localhost";
 	
 	private final String CONNECTION_ERROR="Connection server error";
@@ -329,16 +329,6 @@ public class ClientFacade implements Observer {
 	
 	
 	
-	public void disconnect() {
-		try {
-			clientCL.sendToServer(CommunicationCommands.C_DISCONNECT);
-			clientCL.closeConnection();
-			dispatcher.displayLogin();
-		}catch(IOException e) {
-			dispatcher.update("Try again later.");
-		}
-	}
-	
 	/**
 	 * @return the itemList
 	 */
@@ -385,21 +375,38 @@ public class ClientFacade implements Observer {
 	 */
 	public void createGame() {
 		try {
-			
 			clientCL.sendToServer(CommunicationCommands.GAME+" "+CommunicationCommands.C_CREATE_GAME);
 			waitServerResponse();
 			if(successfulAction) {
-				String[] mes=serverMessage.split(" ");
-				dispatcher.displayWaitingRoom(mes[2]);
-				for (int i=3;i<mes.length;i++) {
-					dispatcher.addPlayer(mes[i]);
-				}
+				dispatcher.displayWaitingRoom(serverMessage);
 				successfulAction=false;
 			}else {
 				dispatcher.update("Please try again later.");
 			}
 		}catch(IOException e) {
 			dispatcher.update(USER_SENDING_ERROR);
+		}
+	}
+	
+	public void quitGame() {
+		try{
+			clientCL.sendToServer(CommunicationCommands.GAME+" "+CommunicationCommands.C_QUIT_GAME);
+			dispatcher.displayMainHub();
+		}catch(IOException e) {
+			dispatcher.update("Please try again later.");
+		}
+	}
+	
+	public void startGame() {
+		try {
+			clientCL.sendToServer(CommunicationCommands.GAME+" "+CommunicationCommands.C_START_GAME);
+			waitServerResponse();
+			if(successfulAction) {
+				
+				successfulAction=false;
+			}
+		}catch(IOException e) {
+			dispatcher.update("Please try again later.");
 		}
 	}
 
