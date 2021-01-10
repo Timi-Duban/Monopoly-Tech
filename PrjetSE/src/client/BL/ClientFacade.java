@@ -329,6 +329,16 @@ public class ClientFacade implements Observer {
 	
 	
 	
+	public void disconnect() {
+		try {
+			clientCL.sendToServer(CommunicationCommands.C_DISCONNECT);
+			clientCL.closeConnection();
+			dispatcher.displayLogin();
+		}catch(IOException e) {
+			dispatcher.update("Try again later.");
+		}
+	}
+	
 	/**
 	 * @return the itemList
 	 */
