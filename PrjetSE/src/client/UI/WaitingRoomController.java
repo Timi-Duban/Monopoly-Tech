@@ -37,7 +37,6 @@ public class WaitingRoomController extends Controller {
 
 	@Override
 	 public void display(Stage stage) {
-		System.out.println("a");
 		stage.setScene(this.scene);
 	 }
 	
@@ -57,6 +56,19 @@ public class WaitingRoomController extends Controller {
 				break;
 			}
 		}
+	}
+	
+	public void updateNewHost() {
+		System.out.println("bbb");
+		start.setVisible(true);
+	}
+	
+	public void startGame() {
+		dispatcher.startGame();
+	}
+	
+	public void quitGame() {
+		dispatcher.quitGame();
 	}
 
 }

@@ -21,7 +21,7 @@ import server.UI.ServerController;
 @SuppressWarnings("deprecation")
 public class ServerFacade implements Observer {
 	
-	final public static int DEFAULT_PORT = 6000;
+	final public static int DEFAULT_PORT = 5555;
 	
 	private ObservableOriginatorServer serverCL;
 	private ServerController controller;
@@ -60,7 +60,7 @@ public class ServerFacade implements Observer {
         
         
        
-        case "#closeConnection":
+        case CommunicationCommands.C_DISCONNECT:
         	originator.close();
         	break;
         }
@@ -163,6 +163,7 @@ public class ServerFacade implements Observer {
         			client.sendToClient(CommunicationCommands.GAME+" "+CommunicationCommands.S_GAME_ALREADY_STARTED);
         		}else {
         			game.addPlayer(client);
+        			client.setInfo("game", game);
         		}
         	}
         	break;
@@ -173,17 +174,17 @@ public class ServerFacade implements Observer {
         	game=createGame();
         	game.addPlayer(client);
         	game.newHost();
+        	client.setInfo("game", game);
         	break;
         case CommunicationCommands.C_QUIT_GAME:
-        	code=mes[2];
-        	game=this.listGames.get(Integer.getInteger(code));
+        	
+        	game=(GameServer)client.getInfo("game");
         	if(game!=null && game.removePlayer(client)) {
-        		this.listGames.remove(Integer.getInteger(code));
+        		this.listGames.remove(game.getCode());
         	}
         	break;
         case CommunicationCommands.C_START_GAME:
-        	code=mes[2];
-        	game=this.listGames.get(Integer.getInteger(code));
+        	game=(GameServer)client.getInfo("game");
         	game.startGame();
         	break;
         }
@@ -198,9 +199,11 @@ public class ServerFacade implements Observer {
     	this.waitingPlayers.add(client);
     	if(this.waitingPlayers.size()==GameServer.MAX_NUMBER_PLAYER) {
     		GameServer game=createGame();
+    		ConnectionToClient player;
     		for(int i=0;i<8;i++) {
-    			
-    			game.addPlayer(this.waitingPlayers.removeFirst());
+    			player=this.waitingPlayers.removeFirst();
+    			game.addPlayer(player);
+    			player.setInfo("game", game);
     		}
     		game.startGame();
     	}

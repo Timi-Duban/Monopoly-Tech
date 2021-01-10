@@ -17,8 +17,6 @@ public class ConnectionToDBMySQL {
 	private static final String LOGIN = "root";
  
 	private static final String MOT_DE_PASSE = "azerty";
-	
-	private static Connection connexion = null;
 
     /**
      * Méthode qui va nous retourner notre instance
@@ -26,9 +24,7 @@ public class ConnectionToDBMySQL {
      * @return
      */
 	public static Connection getInstance() throws SQLException{
-        if(connexion == null){
-        	connexion = DriverManager.getConnection(URL_BD, LOGIN, MOT_DE_PASSE);
-        }        
-        return connexion;
+        return DriverManager.getConnection(URL_BD, LOGIN, MOT_DE_PASSE);
+
     } 
 }

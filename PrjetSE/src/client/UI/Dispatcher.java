@@ -44,7 +44,7 @@ public class Dispatcher {
 	}
 	
 	public void displayWaitingRoom(String code) {
-		WaitingRoomView view=new WaitingRoomView(this);
+		WaitingRoomView view=new WaitingRoomView(this,code);
 		setCurrentController(view.getController());
 		this.currentController.display(this.stage);
 
@@ -56,6 +56,10 @@ public class Dispatcher {
 	
 	public void update(String message) {
 		currentController.update(message);
+	}
+	
+	public void updateNewHost() {
+		((WaitingRoomController)this.currentController).updateNewHost();
 	}
 	
 	public void setCurrentController(Controller controller) {
@@ -85,6 +89,18 @@ public class Dispatcher {
 	
 	public void createGame() {
 		facade.createGame();
+	}
+	
+	public void quitGame() {
+		facade.quitGame();
+	}
+	
+	public void startGame() {
+		facade.startGame();
+	}
+	
+	public void disconnect() {
+		facade.disconnect();
 	}
 	
 	public void addPlayer(String pseudo) {

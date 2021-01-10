@@ -6,6 +6,7 @@ package generalClasses;
  *	Those starting with C are command whose originator is the client, S is for server. If none, then the command is used by both.
  */
 public class CommunicationCommands {
+	public final static String C_DISCONNECT="#closeConnection";
 	//Constant string related to the "Login" and "Sign in" use case
 	public static final String STARTING="#starting";
 	public static final String LOGIN_CHECK="#login";

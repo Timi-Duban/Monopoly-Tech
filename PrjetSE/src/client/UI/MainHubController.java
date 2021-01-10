@@ -35,7 +35,7 @@ public class MainHubController extends Controller {
 	}
 	
 	public void disconnect() {
-		
+		dispatcher.disconnect();
 	}
 	
 	public void displayShop() {
