@@ -45,6 +45,7 @@ public class ClientFacade implements Observer {
 	
 	private boolean successfulResponsefromServer=false;
 	private boolean successfulAction=false;
+	private String serverMessage;
 
 	/**
      * Default constructor
@@ -143,8 +144,9 @@ public class ClientFacade implements Observer {
     	case CommunicationCommands.S_GAME_START:
     		
     	case CommunicationCommands.S_GAME_JOINED:
-    		dispatcher.displayWaitingRoom(mes[2]);
-    		dispatcher.addPlayer(mes[3]);
+    		serverMessage=mes[2];
+    		successfulAction=true;
+    		successfulResponsefromServer=true;
     	case CommunicationCommands.S_GAME_NOT_FOUND:
     		
     	case CommunicationCommands.S_GAME_ALREADY_STARTED:
@@ -374,6 +376,13 @@ public class ClientFacade implements Observer {
 	public void createGame() {
 		try {
 			clientCL.sendToServer(CommunicationCommands.GAME+" "+CommunicationCommands.C_CREATE_GAME);
+			waitServerResponse();
+			if(successfulAction) {
+				dispatcher.displayWaitingRoom(serverMessage);
+				successfulAction=false;
+			}else {
+				dispatcher.update("Please try again later.");
+			}
 		}catch(IOException e) {
 			dispatcher.update(USER_SENDING_ERROR);
 		}

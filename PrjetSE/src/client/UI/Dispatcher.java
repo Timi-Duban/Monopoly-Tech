@@ -44,10 +44,9 @@ public class Dispatcher {
 	}
 	
 	public void displayWaitingRoom(String code) {
-		displayMainHub();
-		/*WaitingRoomView view=new WaitingRoomView(this);
+		WaitingRoomView view=new WaitingRoomView(this);
 		setCurrentController(view.getController());
-		this.currentController.display(this.stage);*/
+		this.currentController.display(this.stage);
 
 	}
 	
