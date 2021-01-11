@@ -3,6 +3,8 @@ package client.UI;
 import java.util.ArrayList;
 
 import generalClasses.Item;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,13 +23,14 @@ public class ShopView {
 	   
 	private Scene scene;
 	private Text actionTarget;
-	 
 	ShopController controller;
+	
 	ArrayList<Item> listNotBoughtItems = controller.getNotBoughtItems();
+
 	
 	public ShopView(Dispatcher dispatcher) {
 		actionTarget = new Text();
-		
+		this.scene=new Scene(grid);
 		this.controller = new ShopController(this.actionTarget, scene, dispatcher);
 	}
 

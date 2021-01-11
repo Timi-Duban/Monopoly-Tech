@@ -39,7 +39,7 @@ public class MainHubController extends Controller {
 	}
 	
 	public void displayShop() {
-		
+		dispatcher.displayShop();
 	}
 	
 	public void displayAchievement(){

@@ -27,6 +27,7 @@ public class ShopController extends Controller {
 	 }
 	
 	public ArrayList<Item> getNotBoughtItems(){
+		System.out.println("test 3 OK");
 		return dispatcher.getNotBoughtItems();
 	}
 

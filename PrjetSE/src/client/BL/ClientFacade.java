@@ -244,17 +244,11 @@ public class ClientFacade implements Observer {
     }
     
 	public ArrayList<Item> getNotBoughtItems(){
-		//Try to connect to the database
 		try {
         	clientCL.openConnection();
-        }catch(IOException e) {
-        	dispatcher.update("The server is unavailable, please try again later.");
-        }
-    	waitServerResponse();
-    	// Try to ask server to see the items
-    	try {
+        	waitServerResponse();
     		int idUser = this.getCurrentUser().getId();
-    		clientCL.sendToServer(CommunicationCommands.SHOP+" "+CommunicationCommands.GETITEMS+" "+idUser);   		
+    		clientCL.sendToServer(CommunicationCommands.SHOP+" "+CommunicationCommands.C_GETITEMS+" "+idUser);   		
     		waitServerResponse();
     		return this.itemList;
     	}catch(IOException e) {
@@ -263,8 +257,7 @@ public class ClientFacade implements Observer {
     		}catch(IOException ex) {}
     		dispatcher.update("The server is busy, please try again later.");
     	}
-    	// All cases are handled
-    	System.out.println("unexpected error");
+    	dispatcher.update("unexpected error");
     	return null;
 	}
 

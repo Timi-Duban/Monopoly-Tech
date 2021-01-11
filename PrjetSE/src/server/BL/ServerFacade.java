@@ -10,9 +10,11 @@ import com.lloseng.ocsf.server.OriginatorMessage;
 
 import generalClasses.User;
 import generalClasses.CommunicationCommands;
+import generalClasses.Item;
 import generalClasses.PasswordUtils;
 import server.PL.AbstractFactoryDAO;
 import server.PL.DAO;
+import server.PL.ItemMySQLDAO;
 import server.UI.ServerController;
 
 /**
@@ -54,6 +56,9 @@ public class ServerFacade implements Observer {
         	break;
         case CommunicationCommands.STARTING:
         	handleStartingCommand(message,originator);
+        	break;
+        case CommunicationCommands.SHOP:
+        	handleShopCommand(message,originator);
         	break;
         
         
@@ -224,6 +229,29 @@ public class ServerFacade implements Observer {
 		return new GameServer(code);
     }
     
+  
+    private void handleShopCommand(String mesReceived, ConnectionToClient client) throws IOException {
+    	String[] mes=mesReceived.split(" ");
+    	String command=mes[1];
+    	switch(command) {
+    	case CommunicationCommands.C_GETITEMS:
+    		try {
+    			AbstractFactoryDAO.openConnectionDatabase();
+    			// Proper way to do: DAO<Item> itemDAO = AbstractFactoryDAO.getInstance().createItemDAO();
+    			ItemMySQLDAO itemDAO = (ItemMySQLDAO) AbstractFactoryDAO.getInstance().createItemDAO();
+    			ArrayList<Item> listItems = itemDAO.findAllItems(Integer.getInteger(mes[2]));
+    			AbstractFactoryDAO.closeConnectionDatabase();
+    			client.sendToClient(listItems);
+    		}catch(SQLException e) {
+    			client.sendToClient("#dbUnaivailable");
+    			client.close();
+    		}
+    		break;
+    	case CommunicationCommands.C_BUY:
+    		break;
+    	}
+    }
+    	
     /**
      * @return
      */

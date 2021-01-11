@@ -3,6 +3,7 @@ package server.PL;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import generalClasses.Item;
 import generalClasses.User;
 
 /**
@@ -17,7 +18,9 @@ public abstract class AbstractFactoryDAO {
      * @return
      */
     public abstract DAO<User> createUserDAO();
-    	
+
+    public abstract DAO<Item> createItemDAO();
+    
     /**
      * 
      */

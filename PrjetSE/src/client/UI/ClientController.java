@@ -24,7 +24,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
-//To do : gérer les exceptions de handleLogin(..) 
+//To do : gï¿½rer les exceptions de handleLogin(..) 
 
 public class ClientController extends Application {
 	private static ClientController controllerSingleton;

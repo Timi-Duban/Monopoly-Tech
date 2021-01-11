@@ -37,6 +37,16 @@ public class Dispatcher {
 		((MainHubController)this.currentController).updatePseudo(pseudo);
 	}
 	
+	public void displayShop() {
+		System.out.println("test 1 OK");
+		ShopView view=new ShopView(this);
+		System.out.println("test 2 OK"); // 3 on controller
+		setCurrentController(view.getController());
+		System.out.println("test 4 OK");
+		this.currentController.display(this.stage);
+		System.out.println("test 5 OK");
+	}
+	
 	public void displayCreationGame() {
 		CreationGameView view=new CreationGameView(this);
 		setCurrentController(view.getController());
