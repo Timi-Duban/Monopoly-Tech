@@ -149,6 +149,49 @@ public class ServerFacade implements Observer {
     		originator.close();
     	}
     	break;
+	case CommunicationCommands.EDIT_CHECK:
+		if(mes.length>=4) {
+			try {
+				AbstractFactoryDAO.openConnectionDatabase();
+				DAO<User> userDAO = AbstractFactoryDAO.getInstance().createUserDAO();
+			User user=userDAO.find(Integer.parseInt(mes[2]));
+			User newUser = userDAO.findByMail(mes[3]);
+				if(user==null) {
+					originator.sendToClient(CommunicationCommands.STARTING+" "+CommunicationCommands.EDIT_CHECK+" "+CommunicationCommands.S_INCORRECT);
+					originator.close();
+					}else{
+			    String email=mes[3];
+						String pseudo=mes[4];
+			    if(newUser == null){
+				newUser=new User(pseudo,email,user.getPassword(),user.getSalt());
+				userDAO.update(newUser);
+				originator.setInfo("user", newUser);
+						    originator.sendToClient(CommunicationCommands.STARTING+" "+CommunicationCommands.EDIT_CHECK+" "+CommunicationCommands.S_CORRECT);
+			    }else{
+				if(newUser.getId() == user.getId()){
+				    newUser=new User(pseudo,email,user.getPassword(),user.getSalt());
+				    userDAO.update(newUser);
+				    originator.setInfo("user", newUser);
+							originator.sendToClient(CommunicationCommands.STARTING+" "+CommunicationCommands.EDIT_CHECK+" "+CommunicationCommands.S_CORRECT);
+				}else{
+				    originator.sendToClient(CommunicationCommands.STARTING+" "+CommunicationCommands.EDIT_CHECK+" "+CommunicationCommands.S_INCORRECT);
+						originator.close();
+				}
+			    }	
+					}
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+			finally {
+				try{
+					AbstractFactoryDAO.closeConnectionDatabase();
+				}catch(SQLException e) {}
+			}
+		}else {
+			originator.sendToClient(CommunicationCommands.STARTING+" "+CommunicationCommands.EDIT_CHECK+" "+CommunicationCommands.S_INCORRECT);
+			originator.close();
+		}
+		break;
     case CommunicationCommands.C_GET_USER:
     	originator.sendToClient((User)(originator.getInfo("user")));
     	break;
