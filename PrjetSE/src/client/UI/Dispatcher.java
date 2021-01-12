@@ -45,6 +45,16 @@ public class Dispatcher {
 		((MainHubController)this.currentController).updatePseudo(pseudo);
 	}
 	
+	public void displaySettingUser() {
+		SettingUserView view = new SettingUserView(this);
+		setCurrentController(view.getController());
+		this.currentController.display(this.stage);
+		String pseudo =facade.getCurrentUser().getPseudo();
+		String email=facade.getCurrentUser().getEmail();
+		((SettingUserHubController)this.currentController).updatePseudoField(pseudo);
+		((SettingUserHubController)this.currentController).updateEmailField(email);
+	}
+	
 	public void displayShop() {
 		ShopView view = new ShopView(this);
 		setCurrentController(view.getController());
@@ -101,7 +111,9 @@ public class Dispatcher {
 	public void handleShopBuying(String itemId) {
 		facade.handleShopBuying(itemId);
 	}
-	
+	public void handleEdit(String email, String pseudo) {
+		facade.handleEdit( email, pseudo);
+	}
 	public ArrayList<Achievement> getAchievements(){
 		return facade.getAchievements();
 	}
