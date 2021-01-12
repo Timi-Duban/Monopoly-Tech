@@ -18,6 +18,7 @@ public class ShopController extends Controller {
 	@Override
 	public void display(Stage stage) {
 		stage.setScene(this.scene);
+		System.out.println("ShopController : setScene");
 	}
 	
 	public ShopController(Text actionTarget, Scene scene, Dispatcher dispatcher) {
@@ -27,8 +28,20 @@ public class ShopController extends Controller {
 	 }
 	
 	public ArrayList<Item> getNotBoughtItems(){
-		System.out.println("test 3 OK");
 		return dispatcher.getNotBoughtItems();
 	}
+	/**
+	 * @param scene the scene to set
+	 */
+	public void setScene(Scene scene) {
+		this.scene = scene;
+	}
+	public void returnHub() {
+		dispatcher.displayMainHub();
+	}
+	public void handleShopBuying(int itemId) {
+		dispatcher.handleShopBuying(Integer.toString(itemId));
+	}
 
+	
 }

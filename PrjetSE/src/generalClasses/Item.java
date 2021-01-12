@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 
 public class Item implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int idItem;
 	private String itemName;
 	private int price;
@@ -28,6 +32,28 @@ public class Item implements Serializable {
 		this.urlImage = urlImage;
 	}
 	
+	
+	
+	@Override
+	public String toString() {
+		return "Item [idItem=" + idItem + ", itemName=" + itemName + ", price=" + price + ", urlImage=" + urlImage
+				+ ", itemDescription=" + itemDescription + "]";
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+		      return false;
+		if (getClass() != obj.getClass())
+		      return false;
+		return this.getIdItem() == ((Item) obj).getIdItem();
+	}
+	
+	@Override
+	public int hashCode() {
+		return idItem * itemName.length()*price;
+	}
+
 	/**
 	 * @return the idItem
 	 */

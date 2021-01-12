@@ -233,23 +233,43 @@ public class ServerFacade implements Observer {
     private void handleShopCommand(String mesReceived, ConnectionToClient client) throws IOException {
     	String[] mes=mesReceived.split(" ");
     	String command=mes[1];
-    	switch(command) {
-    	case CommunicationCommands.C_GETITEMS:
-    		try {
-    			AbstractFactoryDAO.openConnectionDatabase();
-    			// Proper way to do: DAO<Item> itemDAO = AbstractFactoryDAO.getInstance().createItemDAO();
-    			ItemMySQLDAO itemDAO = (ItemMySQLDAO) AbstractFactoryDAO.getInstance().createItemDAO();
-    			ArrayList<Item> listItems = itemDAO.findAllItems(Integer.getInteger(mes[2]));
-    			AbstractFactoryDAO.closeConnectionDatabase();
-    			client.sendToClient(listItems);
-    		}catch(SQLException e) {
-    			client.sendToClient("#dbUnaivailable");
-    			client.close();
-    		}
-    		break;
-    	case CommunicationCommands.C_BUY:
-    		break;
-    	}
+    	final int USERID = Integer.parseInt(mes[2]);
+		try {
+			AbstractFactoryDAO.openConnectionDatabase();
+			// Clean way to do: DAO<Item> itemDAO = AbstractFactoryDAO.getInstance().createItemDAO();
+			ItemMySQLDAO itemDAO = (ItemMySQLDAO) AbstractFactoryDAO.getInstance().createItemDAO();
+			switch(command) {
+	    	case CommunicationCommands.C_GETITEMS:
+		    	ArrayList<Item> listItems ;
+		    	ArrayList<Item> listBoughtItems ;
+				listItems = itemDAO.findAllItems();
+				listBoughtItems = itemDAO.findAllBoughtItems(USERID);
+				listItems.removeAll(listBoughtItems);
+				client.sendToClient(listItems);
+	    		break;
+	    	case CommunicationCommands.BUY:
+	    		final int idItem = Integer.parseInt(mes[3]);
+	    		Item currentItem = itemDAO.find(idItem);
+    			DAO<User> userDAO = AbstractFactoryDAO.getInstance().createUserDAO();
+    			User currentUser = userDAO.find(USERID);
+    			int updatedMoney = currentUser.getUserMoney() - currentItem.getPrice();
+    			User newUser = new User(currentUser.getId(),currentUser.getPseudo(),currentUser.getEmail(),currentUser.getPassword(),currentUser.getSalt(),currentUser.getBestScore(),updatedMoney);
+    			userDAO.update(newUser);
+    			System.out.println("ServerFacade 261 : Argent enlevé"+newUser.getId()+ currentItem.getIdItem());
+    			itemDAO.createTransaction(newUser.getId(), currentItem.getIdItem());
+				client.sendToClient(CommunicationCommands.SHOP+" "+CommunicationCommands.BUY);
+				client.setInfo("user", newUser);
+				client.sendToClient((User)(client.getInfo("user")));
+    			break;
+	    	}
+		} catch(SQLException e) {
+			client.sendToClient("#dbUnaivailable");
+			client.close();
+		}finally {
+			try{
+				AbstractFactoryDAO.closeConnectionDatabase();
+			}catch(SQLException e) {}
+		}
     }
     	
     /**

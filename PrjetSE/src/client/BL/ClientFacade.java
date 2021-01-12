@@ -102,6 +102,9 @@ public class ClientFacade implements Observer {
     		case CommunicationCommands.STARTING:
     			handleStartingCommand(sMes);
     			break;
+    		case CommunicationCommands.SHOP:
+    			handleShopCommand(sMes);
+    			break;
     		}
     	}else if(mes instanceof User) {
     		setCurrentUser((User) mes);
@@ -161,6 +164,10 @@ public class ClientFacade implements Observer {
     	default:
     		
     	}
+    }
+    
+    private void handleShopCommand(String mesReceived) {
+    	successfulResponsefromServer = true;
     }
 
     /**
@@ -245,8 +252,6 @@ public class ClientFacade implements Observer {
     
 	public ArrayList<Item> getNotBoughtItems(){
 		try {
-        	clientCL.openConnection();
-        	waitServerResponse();
     		int idUser = this.getCurrentUser().getId();
     		clientCL.sendToServer(CommunicationCommands.SHOP+" "+CommunicationCommands.C_GETITEMS+" "+idUser);   		
     		waitServerResponse();
@@ -259,6 +264,24 @@ public class ClientFacade implements Observer {
     	}
     	dispatcher.update("unexpected error");
     	return null;
+	}
+	
+	public void handleShopBuying(String itemId) {
+		try {
+			dispatcher.update("Currently buying your item");
+			int idUser = this.getCurrentUser().getId();
+			clientCL.sendToServer(CommunicationCommands.SHOP+" "+CommunicationCommands.BUY+" "+idUser+" "+itemId);
+    		waitServerResponse();
+			System.out.println("ClientFacade test 2 : successful response");
+	    	dispatcher.displayShop();
+			dispatcher.update("You now have the item " + itemId + " !!");
+
+		} catch (IOException e) {
+			try{
+    			clientCL.closeConnection();
+    		}catch(IOException ex) {}
+    		dispatcher.update("The server is busy, please try again later.");
+    	}
 	}
 
     
@@ -411,6 +434,11 @@ public class ClientFacade implements Observer {
 		}catch(IOException e) {
 			dispatcher.update("Please try again later.");
 		}
+	}
+	
+	public int getUserMoney() {
+		User currentUser = this.getCurrentUser();
+		return currentUser.getUserMoney();
 	}
 
 }

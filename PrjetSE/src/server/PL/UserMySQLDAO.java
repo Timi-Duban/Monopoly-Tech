@@ -100,9 +100,20 @@ public class UserMySQLDAO extends DAO<User> {
 	}
 
 	@Override
-	public void update(User obj) {
-		// TODO Auto-generated method stub
-		
+	public void update(User user) throws SQLException {
+		Connection connect=AbstractFactoryDAO.getConnection();
+		String email=user.getEmail();
+		String pseudo=user.getPseudo();
+		String password=user.getPassword();
+		String salt=user.getSalt();
+		int bestScore=user.getBestScore();
+		int money=user.getUserMoney();
+		int id=user.getId();
+		PreparedStatement prepare = connect.prepareStatement(
+				"UPDATE User SET pseudo='"+pseudo+"', email='"+email+"', password='"+password+"', salt='"+salt+"', bestScore="+bestScore+", money="+money+" WHERE id="+id
+				);
+		prepare.executeUpdate();
+		prepare.close();
 	}
 
 	@Override

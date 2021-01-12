@@ -11,6 +11,13 @@ public class Dispatcher {
 	private Controller currentController;
 	private ClientFacade facade;
 	
+	/**
+	 * @return the facade
+	 */
+	public ClientFacade getFacade() {
+		return facade;
+	}
+
 	public Dispatcher(Stage stage) {
 		this.stage=stage;
 		this.facade=new ClientFacade(this);
@@ -38,13 +45,9 @@ public class Dispatcher {
 	}
 	
 	public void displayShop() {
-		System.out.println("test 1 OK");
-		ShopView view=new ShopView(this);
-		System.out.println("test 2 OK"); // 3 on controller
+		ShopView view = new ShopView(this);
 		setCurrentController(view.getController());
-		System.out.println("test 4 OK");
 		this.currentController.display(this.stage);
-		System.out.println("test 5 OK");
 	}
 	
 	public void displayCreationGame() {
@@ -87,7 +90,10 @@ public class Dispatcher {
 	public ArrayList<Item> getNotBoughtItems(){
 		return facade.getNotBoughtItems();
 	}
-
+	
+	public void handleShopBuying(String itemId) {
+		facade.handleShopBuying(itemId);
+	}
 	
 	public void joinPublic() {
 		facade.joinPublicGame();

@@ -35,5 +35,5 @@ public class CommunicationCommands {
 	//Constant string related to the "Shop" use case
 	public static final String SHOP="#shop";
 	public static final String C_GETITEMS="#getItems";
-	public static final String C_BUY="#buyItem";
+	public static final String BUY="#buyItem";
 }

@@ -28,3 +28,6 @@ id integer NOT NULL,
 idItem integer NOT NULL,
 constraint cp_transactions Primary Key(idTransaction));
 
+INSERT INTO user (pseudo, email, password, salt, bestScore, money) VALUES ("RichUser", "richuser@etu.umontpellier.fr", "Z7rx1Gz2d6OSWjURDh9E+LqOWUVjxmF9ii3HuBpBHEQ=", "A0S4Yrz3dpjn6uvyXHrTWX4nOrMJIx", 0, 10000);
+INSERT INTO items (itemName, price, urlImage,itemDescription) VALUES ("Item1",10,"ressource\\items\\item1.jpg","Ceci est une premiere description"),("Item2",20,"ressource\\items\\item2.png","Ceci est une deuxieme description"),("Item3",30,"ressource\\items\\item1.jpg","Ceci est une troisieme description"),("Item4",100000,"ressource\\items\\item4.jpg","Ceci est une chère description");
+INSERT INTO itemtransactions (id, idItem) VALUES (1, 3);
