@@ -43,7 +43,7 @@ public class MainHubController extends Controller {
 	}
 	
 	public void displayAchievement(){
-		
+		dispatcher.displayAchievement();
 	}
 	
 	public void displayCreationGame() {

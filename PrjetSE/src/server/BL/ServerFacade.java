@@ -9,10 +9,12 @@ import com.lloseng.ocsf.server.ObservableOriginatorServer;
 import com.lloseng.ocsf.server.OriginatorMessage;
 
 import generalClasses.User;
+import generalClasses.Achievement;
 import generalClasses.CommunicationCommands;
 import generalClasses.Item;
 import generalClasses.PasswordUtils;
 import server.PL.AbstractFactoryDAO;
+import server.PL.AchievementMySQLDAO;
 import server.PL.DAO;
 import server.PL.ItemMySQLDAO;
 import server.UI.ServerController;
@@ -59,6 +61,9 @@ public class ServerFacade implements Observer {
         	break;
         case CommunicationCommands.SHOP:
         	handleShopCommand(message,originator);
+        	break;
+        case CommunicationCommands.ACHIEVEMENT:
+        	handleAchievementCommand(message,originator);
         	break;
         
         
@@ -124,6 +129,11 @@ public class ServerFacade implements Observer {
 					userDAO.create(user);
 					user=userDAO.findByMail(email);
 					originator.setInfo("user", user);
+					// Clean way to do: DAO<Achievement> AchievementMySQLDAO = AbstractFactoryDAO.getInstance().createAchievementDAO();
+					AchievementMySQLDAO achievementDAO = (AchievementMySQLDAO) AbstractFactoryDAO.getInstance().createAchievementDAO();
+					
+					achievementDAO.createAchievementForUser(user);
+					
 					originator.sendToClient(CommunicationCommands.STARTING+" "+CommunicationCommands.SIGN_IN_CHECK+" "+CommunicationCommands.S_CORRECT);
 				}
     		}catch(SQLException e) {
@@ -262,6 +272,35 @@ public class ServerFacade implements Observer {
 				client.sendToClient((User)(client.getInfo("user")));
     			break;
 	    	}
+		} catch(SQLException e) {
+			client.sendToClient("#dbUnaivailable");
+			client.close();
+		}finally {
+			try{
+				AbstractFactoryDAO.closeConnectionDatabase();
+			}catch(SQLException e) {}
+		}
+    }
+    
+    /**
+     * Add a player to the list of player waiting for a public game, and create a new game and start it
+     * if there is enough players. If so, remove the players from the list.
+     * @param client
+     */
+    private void handleAchievementCommand(String mesReceived, ConnectionToClient client) throws IOException {
+    	String[] mes=mesReceived.split(" ");
+    	final int USERID = Integer.parseInt(mes[1]);
+		try {
+			AbstractFactoryDAO.openConnectionDatabase();
+			// Clean way to do: DAO<Achievement> AchievementMySQLDAO = AbstractFactoryDAO.getInstance().createAchievementDAO();
+			AchievementMySQLDAO achievementDAO = (AchievementMySQLDAO) AbstractFactoryDAO.getInstance().createAchievementDAO();
+			
+		    ArrayList<Achievement> listAchievements ;
+		    listAchievements = achievementDAO.findAchievementUser(USERID);
+			client.sendToClient(listAchievements);
+			System.out.println(listAchievements);
+			
+	    	
 		} catch(SQLException e) {
 			client.sendToClient("#dbUnaivailable");
 			client.close();

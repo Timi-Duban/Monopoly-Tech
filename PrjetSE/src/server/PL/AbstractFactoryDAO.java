@@ -3,6 +3,7 @@ package server.PL;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import generalClasses.Achievement;
 import generalClasses.Item;
 import generalClasses.User;
 
@@ -20,6 +21,8 @@ public abstract class AbstractFactoryDAO {
     public abstract DAO<User> createUserDAO();
 
     public abstract DAO<Item> createItemDAO();
+    
+    public abstract DAO<Achievement> createAchievementDAO();
     
     /**
      * 

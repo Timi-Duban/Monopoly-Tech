@@ -3,6 +3,7 @@ package client.UI;
 import java.util.ArrayList;
 
 import client.BL.ClientFacade;
+import generalClasses.Achievement;
 import generalClasses.Item;
 import javafx.stage.Stage;
 
@@ -67,6 +68,12 @@ public class Dispatcher {
 		
 	}
 	
+	public void displayAchievement() {
+		AchievementView view=new AchievementView(this);
+		setCurrentController(view.getController());
+		this.currentController.display(this.stage);
+	}
+	
 	public void update(String message) {
 		currentController.update(message);
 	}
@@ -93,6 +100,10 @@ public class Dispatcher {
 	
 	public void handleShopBuying(String itemId) {
 		facade.handleShopBuying(itemId);
+	}
+	
+	public ArrayList<Achievement> getAchievements(){
+		return facade.getAchievements();
 	}
 	
 	public void joinPublic() {

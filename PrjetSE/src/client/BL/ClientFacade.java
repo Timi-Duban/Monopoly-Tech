@@ -8,6 +8,7 @@ import generalClasses.exceptions.InvalidIdException;
 import generalClasses.exceptions.LoginException;
 import generalClasses.exceptions.SendMessageException;
 import generalClasses.exceptions.WrongIdException;
+import generalClasses.Achievement;
 import generalClasses.CommunicationCommands;
 import generalClasses.Item;
 
@@ -42,6 +43,7 @@ public class ClientFacade implements Observer {
 	private ObservableClient clientCL;
 	private Dispatcher dispatcher;
 	private ArrayList<Item> itemList = null;
+	private ArrayList<Achievement> achievementList = null;
 	
 	private boolean successfulResponsefromServer=false;
 	private boolean successfulAction=false;
@@ -105,14 +107,34 @@ public class ClientFacade implements Observer {
     		case CommunicationCommands.SHOP:
     			handleShopCommand(sMes);
     			break;
+    		case CommunicationCommands.ACHIEVEMENT:
+    			handleAchievementCommand(sMes);
+    			break;
+    		
     		}
     	}else if(mes instanceof User) {
     		setCurrentUser((User) mes);
     		successfulResponsefromServer=true;
-    	}else if(mes instanceof ArrayList<?>) {
-    		setItemList((ArrayList<Item>) mes);
-    		successfulResponsefromServer=true;
+    	}else if(mes instanceof ArrayList<?>) {	
+    		try {
+    			Object test = ((ArrayList<Object>)mes).get(0);
+    			if( test instanceof Achievement) {
+    				setAchievementList((ArrayList<Achievement>) mes);
+    	    		successfulResponsefromServer=true;
+    			}
+    			else {
+    				setItemList((ArrayList<Item>) mes);
+    	    		successfulResponsefromServer=true;
+    			}
+    		}
+    		catch(IndexOutOfBoundsException e)
+            {
+    			setItemList((ArrayList<Item>) mes);
+	    		successfulResponsefromServer=true;
+            }
+    	
     	}
+    	
     }
     
     private void handleStartingCommand(String mesReceived) {
@@ -283,8 +305,29 @@ public class ClientFacade implements Observer {
     		dispatcher.update("The server is busy, please try again later.");
     	}
 	}
-
+	public ArrayList<Achievement> getAchievements(){
+		
+    	// Try to ask server to see the achievements
+    	try {
+    		int idUser = this.getCurrentUser().getId();
+    		clientCL.sendToServer(CommunicationCommands.ACHIEVEMENT+" "+idUser);   		
+    		waitServerResponse();
+    		
+    		return this.achievementList;
+    	}catch(IOException e) {
+    		try{
+    			clientCL.closeConnection();
+    		}catch(IOException ex) {}
+    		dispatcher.update("The server is busy, please try again later.");
+    	}
+    	// All cases are handled
+    	dispatcher.update("unexpected error");
+    	return null;
+	}
     
+	private void handleAchievementCommand(String mesReceived) {
+    	successfulResponsefromServer = true;
+    }
   
     
     /**
@@ -371,7 +414,21 @@ public class ClientFacade implements Observer {
 		this.itemList = itemList;
 	}
 
+	/**
+	 * @return the achievementList
+	 */
+	public ArrayList<Achievement> getAchievementList() {
+		return achievementList;
+	}
 
+
+
+	/**
+	 * @param achievementList the achievementList to set
+	 */
+	public void setAchievementList(ArrayList<Achievement> achievementList) {
+		this.achievementList = achievementList;
+	}
 
 	/**
 	 * Send to the server the intention of the client to join a public game.

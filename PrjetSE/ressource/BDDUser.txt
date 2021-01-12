@@ -31,3 +31,33 @@ constraint cp_transactions Primary Key(idTransaction));
 INSERT INTO user (pseudo, email, password, salt, bestScore, money) VALUES ("RichUser", "richuser@etu.umontpellier.fr", "Z7rx1Gz2d6OSWjURDh9E+LqOWUVjxmF9ii3HuBpBHEQ=", "A0S4Yrz3dpjn6uvyXHrTWX4nOrMJIx", 0, 10000);
 INSERT INTO items (itemName, price, urlImage,itemDescription) VALUES ("Item1",10,"ressource\\items\\item1.jpg","Ceci est une premiere description"),("Item2",20,"ressource\\items\\item2.png","Ceci est une deuxieme description"),("Item3",30,"ressource\\items\\item1.jpg","Ceci est une troisieme description"),("Item4",100000,"ressource\\items\\item4.jpg","Ceci est une chère description");
 INSERT INTO itemtransactions (id, idItem) VALUES (1, 3);
+
+CREATE TABLE Achievement(
+idAchievement integer NOT NULL AUTO_INCREMENT,
+achievementDescription varchar(255) UNIQUE NOT NULL,
+nbToReach integer NOT NULL,
+achievementType varchar(255) NOT NULL,
+amountAchievement integer NOT NULL,
+constraint cp_achievement Primary Key(idAchievement));
+
+CREATE TABLE AchievementUser(
+idAchievementUser integer NOT NULL AUTO_INCREMENT,
+id integer NOT NULL,
+idAchievement integer NOT NULL,
+isAchieved boolean NOT NULL,
+constraint cp_achivementUser Primary Key(idAchievementUser));
+
+INSERT INTO Achievement (achievementDescription, nbToReach, achievementType, amountAchievement)
+ VALUES
+ ('Jouer 1 partie', 1, 'game', 50),
+ ('Jouer 5 parties', 5, 'game',100),
+ ('Jouer 10 parties', 10, 'game',200),
+ ('Jouer 15 parties', 15, 'game',300),
+ ('Avoir 1 ami', 1, 'friend',50),
+ ('Avoir 5 amis', 5, 'friend',100),
+ ('Avoir 10 amis', 10, 'friend',200),
+ ('Avoir 15 amis', 15, 'friend',300),
+ ('Acheter 5 objets dans la boutique', 5, 'item',200),
+ ('Acheter 10 objets dans la boutique', 10, 'item',300),
+ ('Acheter 15 objets dans la boutique', 15, 'item',500),
+ ('Acheter 1 objet dans la boutique', 1, 'item', 100);
