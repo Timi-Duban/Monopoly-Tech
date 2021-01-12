@@ -30,8 +30,9 @@ public class MainHubView {
 		buttonPlay=new Button("Play");
 		buttonShop=new Button("Shop");
 		buttonAchievement=new Button("Achievement");
+		buttonSetting =new Button("Setting");
 		hbBtn=new VBox();
-		hbBtn.getChildren().addAll(buttonDisconnect,buttonPlay,buttonShop,buttonAchievement);
+		hbBtn.getChildren().addAll(buttonDisconnect,buttonPlay,buttonShop,buttonAchievement,buttonSetting);
 		pseudo=new Text();
 		notification=new Text();
 		
@@ -48,6 +49,14 @@ public class MainHubView {
 
 	            }
 	        });
+		
+		buttonSetting.setOnAction(new EventHandler<ActionEvent>() {
+            		@Override
+           		 public void handle(ActionEvent event) {
+            		controller.displaySettingUser();
+
+           		}
+        	});
 	      
 		buttonPlay.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
