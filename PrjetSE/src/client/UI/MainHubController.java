@@ -49,5 +49,8 @@ public class MainHubController extends Controller {
 	public void displayCreationGame() {
 		dispatcher.displayCreationGame();
 	}
+	public void displaySettingUser() {
+		dispatcher.displaySettingUser();
+	}
 
 }
