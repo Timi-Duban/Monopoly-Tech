@@ -395,6 +395,22 @@ public class ClientFacade implements Observer {
     	}
 
     }
+	
+    private void checkValidity(String email, String pseudo){
+    	String[] mail=email.split("@");
+    	if(mail.length!=2 || mail[0].isEmpty() || mail[1].isEmpty()) {
+    		dispatcher.update("Your email is incorrect.");
+    	}
+    	
+    	if(pseudo.length()<PSEUDO_MINIMAL_LENGTH) {
+    		dispatcher.update("Your pseudonym is too short.");
+    	}
+    	
+    	if(pseudo.length()>PSEUDO_MAXIMAL_LENGTH) {
+    		dispatcher.update("Your pseudonym is too long.");
+    	}
+
+    }
 
     /**
      * allow the calling thread to wait for a positive response from the server to go on.
