@@ -14,6 +14,7 @@ public class CommunicationCommands {
 	public static final String S_INCORRECT="incorrect";
 	public static final String SIGN_IN_CHECK="#signin";
 	public static final String C_GET_USER="#getCurrentUser";
+	public static final String EDIT_CHECK="#Edit";
 	
 	//Constant string related to the "Play" use case
 	public static final String GAME="#game";
