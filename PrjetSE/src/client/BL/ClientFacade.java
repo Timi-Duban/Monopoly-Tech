@@ -155,6 +155,14 @@ public class ClientFacade implements Observer {
     		}
     		successfulResponsefromServer=true;
     		break;
+	case CommunicationCommands.EDIT_CHECK:
+			//sign in validation from server
+			if(mes[2].equals(CommunicationCommands.S_CORRECT)) {
+				successfulAction=true;
+			}
+			successfulResponsefromServer=true;
+			break;
+    	
     	}
     }
     
@@ -271,6 +279,37 @@ public class ClientFacade implements Observer {
     	waitServerResponse();
     	dispatcher.displayMainHub();
     }
+	
+	public void handleEdit(String email, String pseudo) {
+    	int id = this.getCurrentUser().getId();
+    	checkValidity(email,pseudo);
+        try {
+            clientCL.openConnection();
+        }catch(IOException e) {
+            dispatcher.update("The server is unavailable, please try again later.");
+        }
+        waitServerResponse();
+        try {
+            clientCL.sendToServer(CommunicationCommands.STARTING+" "+CommunicationCommands.EDIT_CHECK+" "+id+" "+email+" "+pseudo);   		
+            waitServerResponse();
+            if(successfulAction) {
+                clientCL.sendToServer(CommunicationCommands.STARTING+" "+CommunicationCommands.C_GET_USER);
+                successfulAction=false;
+            }else {
+                clientCL.closeConnection();
+                dispatcher.update("Email or pseudo already used.");
+            }
+        }catch(IOException e) {
+            try{
+                clientCL.closeConnection();
+            }catch(IOException ex) {}
+            dispatcher.update("The server is busy, please try again later.");
+        }
+        //Waiting for the server to send us the User
+        waitServerResponse();
+        dispatcher.displayMainHub();
+    }
+    
     
 	public ArrayList<Item> getNotBoughtItems(){
 		try {
