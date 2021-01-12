@@ -18,6 +18,7 @@ public class MainHubView {
 	private Button buttonPlay;
 	private Button buttonShop;
 	private Button buttonAchievement;
+	private Button buttonSetting;
 	
 	private VBox hbBtn;
 	
